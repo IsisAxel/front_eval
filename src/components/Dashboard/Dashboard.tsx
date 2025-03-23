@@ -12,7 +12,7 @@ import { Avatar, Breadcrumb, Layout, Menu, theme } from 'antd';
 import FormTemplate from '../FormTemplate/FormTemplate';
 import MyForm from '../MyFrom/MyForm';
 import TableTemplate from '../TableTemplate/TableTemplate';
-import { fetchDataGet, setupInterceptors } from '../../util/util';
+import { fetchDataGet, fetchDataPost, setupInterceptors } from '../../util/util';
 import { useNavigate } from 'react-router-dom';
 import Loading from '../Loading/Loading';
 import UploadFile from '../UploadFile/UploadFile';
@@ -59,7 +59,7 @@ function getItem(
 }
 
 const items: MenuItem[] = [
-  getItem('Option 1', '1', <PieChartOutlined />),
+  getItem('Dashboard', '1', <PieChartOutlined />),
   getItem('Option 2', '2', <DesktopOutlined />),
   getItem('User', 'sub1', <UserOutlined />, [
     getItem('Table', '3'),
@@ -134,9 +134,20 @@ const Dashboard: React.FC = () => {
   const breadcrumbPath = useMemo(() => getBreadcrumbPath(selectedKey), [selectedKey]);
 
   const logout = () => {
-    fetchDataGet('http://localhost:8080/admin/logout')
+    const userId = localStorage.getItem('userId');
+    const token = localStorage.getItem('accessToken');
+    fetchDataPost('http://localhost:8080/authentification/logout', { userId , token })
     .then((response : any) =>{
-      console.log(response);
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('avatar');
+      localStorage.removeItem('companyName');
+      localStorage.removeItem('email');
+      localStorage.removeItem('firstName');
+      localStorage.removeItem('lastName');
+      localStorage.removeItem('menuNavigation');
+      localStorage.removeItem('refreshToken');
+      localStorage.removeItem('roles');
+      localStorage.removeItem('userId');
       navigate('/'); 
     })
     .catch((error : any) => {
@@ -147,22 +158,11 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     setupInterceptors(navigate);
-    
-    const fetchUsername = async () => {
-      setIsLoading(true); // Active le chargement
-      
-      try {
-        const data = await fetchDataGet("http://localhost:8080/admin/sessionUser");
-        console.log(data);
-        setUser(data);
-      } catch (error: any) {
-        console.log(error);
-      } finally {
-        setIsLoading(false); // Désactive le chargement
-      }
-    };
-  
-    fetchUsername();
+    if (localStorage.getItem('accessToken') === null) {
+      navigate('/unauthorized');
+    }
+    setUser(localStorage.getItem('firstName') || 'Admin');
+    setIsLoading(false);
   }, [navigate]);
 
   const styles = {
