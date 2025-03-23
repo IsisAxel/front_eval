@@ -6,7 +6,7 @@ export const setupInterceptors = (navigate : NavigateFunction) => {
   axios.interceptors.response.use(
     (response) => response,
     (error) => {
-      if ((error.response && error.response.status === 401) || !error.response) {
+      if ((error.response && error.response.status === 401) || !error.response || error.response.data == "Token has expired.") {
         navigate("/unauthorized");
       }
       return Promise.reject(error);
@@ -18,9 +18,13 @@ export const setupInterceptors = (navigate : NavigateFunction) => {
 export const fetchDataGet = async (url: string, options: AxiosRequestConfig = {}): Promise<any> => {
   try {
     // Ajout de withCredentials pour inclure les cookies
+    const token = localStorage.getItem('accessToken');
     const config: AxiosRequestConfig = {
       ...options,
       withCredentials: true,  // Active l'envoi des cookies
+      headers:{
+        'Authorization': token ? 'Bearer ' + token : ""
+      }
     };
     const response: AxiosResponse = await axios.get(url, config);
     return response.data;
@@ -34,9 +38,13 @@ export const fetchDataGet = async (url: string, options: AxiosRequestConfig = {}
 export const fetchDataPost = async (url: string, data: any, options: AxiosRequestConfig = {}): Promise<any> => {
   try {
     // Ajout de withCredentials pour inclure les cookies
+    const token = localStorage.getItem('accessToken');
     const config: AxiosRequestConfig = {
       ...options,
       withCredentials: true,  // Active l'envoi des cookies
+      headers:{
+        'Authorization': token ? 'Bearer ' + token : ""
+      }
     };
     const response: AxiosResponse = await axios.post(url, data, config);
     return response.data;
