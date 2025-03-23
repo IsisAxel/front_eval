@@ -3,9 +3,11 @@ import { Table } from "antd";
 interface CRMDataProps {
   data: any;
   onCampaignClick: () => void;
+  onBudgetClick: () => void;
+  onExpenseClick: () => void;
 }
 
-const CRMData: React.FC<CRMDataProps> = ({ data, onCampaignClick }) => {
+const CRMData: React.FC<CRMDataProps> = ({ data, onCampaignClick , onBudgetClick , onExpenseClick }) => {
   const dataSource = [
     {
       key: '1',
@@ -35,12 +37,24 @@ const CRMData: React.FC<CRMDataProps> = ({ data, onCampaignClick }) => {
       key: 'lead',
     },
     {
-      title: 'Budget',
+      title: (        
+        <span
+          style={{ color: 'blue', cursor: 'pointer' }}
+          onClick={onBudgetClick}
+        >
+          Budget
+        </span>),
       dataIndex: 'budget',
       key: 'budget',
     },
     {
-      title: 'Expense',
+      title: (        
+        <span
+          style={{ color: 'blue', cursor: 'pointer' }}
+          onClick={onExpenseClick}
+        >
+          Expense
+        </span>),
       dataIndex: 'expense',
       key: 'expense',
     },

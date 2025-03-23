@@ -17,6 +17,8 @@ import { useNavigate } from 'react-router-dom';
 import Loading from '../Loading/Loading';
 import UploadFile from '../UploadFile/UploadFile';
 import Campaign from '../Campaign/Campaign';
+import Budget from '../Budget/Budget';
+import Expense from '../Expense/Expense';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -29,6 +31,8 @@ const Dashboard: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [crmData, setCrmData] = useState(null);
   const [campaignList, setCampaignList] = useState(null);
+  const [budgetList, setBudgetList] = useState(null);
+  const [expenseList, setExpenseList] = useState(null);
   const navigate = useNavigate();
 
   const {
@@ -39,7 +43,6 @@ const Dashboard: React.FC = () => {
     // Mettre en place l'intercepteur Axios avant d'appeler les API
     setupInterceptors(navigate);
 
-    // Appel API pour récupérer les données de CRM
     fetchDataGet('http://localhost:8080/dashboard/getCRMData')
       .then((response: any) => {
         setCrmData(response.data.crmDashboard);
@@ -52,6 +55,24 @@ const Dashboard: React.FC = () => {
       .then((response: any) => {
         console.log(response.data);
         setCampaignList(response.data);
+      })
+      .catch((error: any) => {
+        console.error(error);
+      });
+
+      fetchDataGet('http://localhost:8080/budget/all')
+      .then((response: any) => {
+        console.log(response.data);
+        setBudgetList(response.data);
+      })
+      .catch((error: any) => {
+        console.error(error);
+      });
+
+      fetchDataGet('http://localhost:8080/expense/all')
+      .then((response: any) => {
+        console.log(response.data);
+        setExpenseList(response.data);
       })
       .catch((error: any) => {
         console.error(error);
@@ -80,15 +101,22 @@ const Dashboard: React.FC = () => {
   const handleCampaignClick = () => {
     setSelectedKey('6');
   };
+  const handleBudgetClick = () => {
+    setSelectedKey('8');
+  };
+  const handleExpenseClick = () => {
+    setSelectedKey('7');
+  };
 
   const COMPONENTS: { [key: string]: React.FC | undefined } = {
-    '1': () => crmData ? <CRMData data={crmData} onCampaignClick={handleCampaignClick} /> : <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}><Loading /> </div>,
+    '1': () => crmData ? <CRMData data={crmData} onCampaignClick={handleCampaignClick} onBudgetClick={handleBudgetClick} onExpenseClick={handleExpenseClick} /> : <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}><Loading /> </div>,
     '2': () => <div>Contenu pour Option 2</div>,
     '3': () => <TableTemplate />,
     '4': () => <FormTemplate />,
     '5': () => <div>Contenu pour Alex</div>,
     '6': () => campaignList ? <Campaign data={campaignList}/> : <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}><Loading /> </div>,
-    '8': () => <div>Contenu pour Team 2</div>,
+    '7': () => expenseList ? <Expense data={expenseList}/> : <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}><Loading /> </div>,
+    '8': () => budgetList ? <Budget data={budgetList}/> : <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}><Loading /> </div>,
     '9': () => <UploadFile />,
   };
 
@@ -110,8 +138,9 @@ const Dashboard: React.FC = () => {
       icon: <TeamOutlined />,
       label: 'Team',
       children: [
-        { key: '6', label: 'Compaign' },
         { key: '8', label: 'Budget' },
+        { key: '6', label: 'Compaign' },
+        { key: '7', label: 'Expense' },
       ],
     },
     { key: '9', icon: <FileOutlined />, label: 'Files' },
