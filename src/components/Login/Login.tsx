@@ -11,10 +11,20 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
 
   const onFinish = (values: any) => {
-    const { username, password } = values;
-    fetchDataPost('http://localhost:8080/admin/login', { username, password })
+    const { email, password } = values;
+    fetchDataPost('http://localhost:8080/authentification/login', { email, password })
       .then((response) =>{
-        console.log(response);
+        const userData = response.data;
+        localStorage.setItem('accessToken', userData.accessToken);
+        localStorage.setItem('avatar', userData.avatar);
+        localStorage.setItem('companyName', userData.companyName);
+        localStorage.setItem('email', userData.email);
+        localStorage.setItem('firstName', userData.firstName);
+        localStorage.setItem('lastName', userData.lastName);
+        localStorage.setItem('menuNavigation', JSON.stringify(userData.menuNavigation));
+        localStorage.setItem('refreshToken', userData.refreshToken);
+        localStorage.setItem('roles', JSON.stringify(userData.roles));
+        localStorage.setItem('userId', userData.userId);
         navigate('/dashboard'); 
       })
       .catch((error) => {
@@ -51,21 +61,14 @@ const Login: React.FC = () => {
       }}>
         <Title level={2} style={{ color: '#1890ff', marginBottom: '20px' }}>Login</Title>
 
-        {error && typeof error === "object" && !Array.isArray(error) && error !== null ? (
-          <>
-            {error.username && <Alert message={`${error.username}`} type="error" showIcon style={{ marginBottom: '15px' }} />}
-            {error.password && <Alert message={`${error.password}`} type="error" showIcon style={{ marginBottom: '15px' }} />}
-          </>
-        ) : (
-          error && <Alert message={error} type="error" showIcon style={{ marginBottom: '15px' }} />
-        )}
+        {error && <Alert message={error} type="error" showIcon style={{ marginBottom: '15px' }} />}
 
         <Form name="login" initialValues={{ remember: true }} onFinish={onFinish}>
           <Form.Item
-            name="username"
-            rules={[{ required: true, message: 'Please input your Username!' }]}
+            name="email"
+            rules={[{ required: true, message: 'Please input your Email!' }]}
           >
-            <Input prefix={<UserOutlined />} placeholder="Username" />
+            <Input prefix={<UserOutlined />} placeholder="Email" />
           </Form.Item>
           <Form.Item
             name="password"

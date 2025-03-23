@@ -6,7 +6,7 @@ export const setupInterceptors = (navigate : NavigateFunction) => {
   axios.interceptors.response.use(
     (response) => response,
     (error) => {
-      if ((error.response && error.response.status === 403) || !error.response) {
+      if ((error.response && error.response.status === 401) || !error.response) {
         navigate("/unauthorized");
       }
       return Promise.reject(error);
