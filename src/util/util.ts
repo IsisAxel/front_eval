@@ -6,7 +6,7 @@ export const setupInterceptors = (navigate : NavigateFunction) => {
   axios.interceptors.response.use(
     (response) => response,
     (error) => {
-      if ((error.response && error.response.status === 401) || !error.response || error.response.data == "Token has expired.") {
+      if ((error.response && error.response.status === 401) || !error.response || error.response.data == "Token has expired." || error.response.data.startsWith("I/O error on")) {
         navigate("/unauthorized");
       }
       return Promise.reject(error);
