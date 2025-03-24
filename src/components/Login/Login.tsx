@@ -32,6 +32,9 @@ const Login: React.FC = () => {
         if (error.response) {
           const err = error.response.data;
           if (err) {
+            if (err.startsWith("I/O error on")) {
+              setError("Server shutdown, please try again later.");
+            }
             setError(err);
           } else {
             setError(error.message);

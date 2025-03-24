@@ -19,6 +19,7 @@ import UploadFile from '../UploadFile/UploadFile';
 import Campaign from '../Campaign/Campaign';
 import Budget from '../Budget/Budget';
 import Expense from '../Expense/Expense';
+import BudgetAlertForm from '../BudgetAlertForm/BudgetAlertForm';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -30,9 +31,9 @@ const Dashboard: React.FC = () => {
   const [user, setUser] = useState("Admin");
   const [isLoading, setIsLoading] = useState(true);
   const [crmData, setCrmData] = useState(null);
-  const [campaignList, setCampaignList] = useState(null);
-  const [budgetList, setBudgetList] = useState(null);
-  const [expenseList, setExpenseList] = useState(null);
+  const [campaignList, setCampaignList] = useState<any[]>([]);
+  const [budgetList, setBudgetList] = useState<any[]>([]);
+  const [expenseList, setExpenseList] = useState<any[]>([]);
   const navigate = useNavigate();
 
   const {
@@ -110,13 +111,13 @@ const Dashboard: React.FC = () => {
 
   const COMPONENTS: { [key: string]: React.FC | undefined } = {
     '1': () => crmData ? <CRMData data={crmData} onCampaignClick={handleCampaignClick} onBudgetClick={handleBudgetClick} onExpenseClick={handleExpenseClick} /> : <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}><Loading /> </div>,
-    '2': () => <div>Contenu pour Option 2</div>,
+    '2': () => <BudgetAlertForm/>,
     '3': () => <TableTemplate />,
     '4': () => <FormTemplate />,
     '5': () => <div>Contenu pour Alex</div>,
-    '6': () => campaignList ? <Campaign data={campaignList}/> : <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}><Loading /> </div>,
-    '7': () => expenseList ? <Expense data={expenseList}/> : <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}><Loading /> </div>,
-    '8': () => budgetList ? <Budget data={budgetList}/> : <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}><Loading /> </div>,
+    '6': () => campaignList ? <Campaign data={campaignList} setData={setCampaignList}/> : <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}><Loading /> </div>,
+    '7': () => expenseList ? <Expense data={expenseList} setData={setExpenseList}/> : <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}><Loading /> </div>,
+    '8': () => budgetList ? <Budget data={budgetList} setData={setBudgetList}/> : <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}><Loading /> </div>,
     '9': () => <UploadFile />,
   };
 
