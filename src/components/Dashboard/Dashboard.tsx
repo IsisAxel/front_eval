@@ -34,6 +34,9 @@ const Dashboard: React.FC = () => {
   const [campaignList, setCampaignList] = useState<any[]>([]);
   const [budgetList, setBudgetList] = useState<any[]>([]);
   const [expenseList, setExpenseList] = useState<any[]>([]);
+  const [revenueData, setRevenueData] = useState<any[]>([]);
+  const [expenseByCampaign, setExpenseByCampaign] = useState<any[]>([]);
+  const [budgetByCampaign, setBudgetByCampaign] = useState<any[]>([]);
   const navigate = useNavigate();
 
   const {
@@ -41,7 +44,6 @@ const Dashboard: React.FC = () => {
   } = theme.useToken();
 
   useEffect(() => {
-    // Mettre en place l'intercepteur Axios avant d'appeler les API
     setupInterceptors(navigate);
 
     fetchDataGet('http://localhost:8080/dashboard/getCRMData')
@@ -61,9 +63,17 @@ const Dashboard: React.FC = () => {
         console.error(error);
       });
 
-      fetchDataGet('http://localhost:8080/budget/all')
+      fetchDataGet('http://localhost:8080/campaign/revenueSummary')
       .then((response: any) => {
         console.log(response.data);
+        setRevenueData(response.data);
+      })
+      .catch((error: any) => {
+        console.error(error);
+      });
+
+      fetchDataGet('http://localhost:8080/budget/all')
+      .then((response: any) => {
         setBudgetList(response.data);
       })
       .catch((error: any) => {
@@ -72,8 +82,24 @@ const Dashboard: React.FC = () => {
 
       fetchDataGet('http://localhost:8080/expense/all')
       .then((response: any) => {
-        console.log(response.data);
         setExpenseList(response.data);
+      })
+      .catch((error: any) => {
+        console.error(error);
+      });
+
+      fetchDataGet('http://localhost:8080/budget/budgetByCampaign')
+      .then((response: any) => {
+        setBudgetByCampaign(response.data);
+      })
+      .catch((error: any) => {
+        console.error(error);
+      });
+
+      fetchDataGet('http://localhost:8080/expense/expenseAmountByCampaign')
+      .then((response: any) => {
+        console.log(response.data);
+        setExpenseByCampaign(response.data);
       })
       .catch((error: any) => {
         console.error(error);
@@ -110,7 +136,7 @@ const Dashboard: React.FC = () => {
   };
 
   const COMPONENTS: { [key: string]: React.FC | undefined } = {
-    '1': () => crmData ? <CRMData data={crmData} onCampaignClick={handleCampaignClick} onBudgetClick={handleBudgetClick} onExpenseClick={handleExpenseClick} /> : <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}><Loading /> </div>,
+    '1': () => crmData  && revenueData && budgetByCampaign && expenseByCampaign ? <CRMData data={crmData} expenseByCampaign={expenseByCampaign} budgetByCampaign={budgetByCampaign} onCampaignClick={handleCampaignClick} onBudgetClick={handleBudgetClick} onExpenseClick={handleExpenseClick} revenueData={revenueData} /> : <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}><Loading /> </div>,
     '2': () => <BudgetAlertForm/>,
     '3': () => <TableTemplate />,
     '4': () => <FormTemplate />,
