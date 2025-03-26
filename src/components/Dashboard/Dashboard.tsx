@@ -138,9 +138,9 @@ const Dashboard: React.FC = () => {
   const COMPONENTS: { [key: string]: React.FC | undefined } = {
     '1': () => crmData  && revenueData && budgetByCampaign && expenseByCampaign ? <CRMData data={crmData} expenseByCampaign={expenseByCampaign} budgetByCampaign={budgetByCampaign} onCampaignClick={handleCampaignClick} onBudgetClick={handleBudgetClick} onExpenseClick={handleExpenseClick} revenueData={revenueData} /> : <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}><Loading /> </div>,
     '2': () => <BudgetAlertForm/>,
-    '3': () => <TableTemplate />,
-    '4': () => <FormTemplate />,
-    '5': () => <div>Contenu pour Alex</div>,
+    // '3': () => <TableTemplate />,
+    // '4': () => <FormTemplate />,
+    // '5': () => <div>Contenu pour Alex</div>,
     '6': () => campaignList ? <Campaign data={campaignList} setData={setCampaignList}/> : <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}><Loading /> </div>,
     '7': () => expenseList ? <Expense data={expenseList} setData={setExpenseList}/> : <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}><Loading /> </div>,
     '8': () => budgetList ? <Budget data={budgetList} setData={setBudgetList}/> : <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}><Loading /> </div>,
@@ -149,17 +149,17 @@ const Dashboard: React.FC = () => {
 
   const items: MenuItem[] = [
     { key: '1', icon: <PieChartOutlined />, label: 'Dashboard' },
-    { key: '2', icon: <DesktopOutlined />, label: 'Option 2' },
-    {
-      key: 'sub1',
-      icon: <UserOutlined />,
-      label: 'User',
-      children: [
-        { key: '3', label: 'Table' },
-        { key: '4', label: 'Formulaire' },
-        { key: '5', label: 'Alex' },
-      ],
-    },
+    { key: '2', icon: <DesktopOutlined />, label: 'Budget Alert Rate' },
+    // {
+    //   key: 'sub1',
+    //   icon: <UserOutlined />,
+    //   label: 'User',
+    //   children: [
+    //     { key: '3', label: 'Table' },
+    //     { key: '4', label: 'Formulaire' },
+    //     { key: '5', label: 'Alex' },
+    //   ],
+    // },
     {
       key: 'sub2',
       icon: <TeamOutlined />,

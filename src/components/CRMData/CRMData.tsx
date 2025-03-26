@@ -49,6 +49,12 @@ const CRMData: React.FC<CRMDataProps> = ({
     }
   ];
 
+    // Fonction pour définir le style des lignes en fonction des montants
+    const getRowStyle = (record: any) => ({
+      backgroundColor: record.campaign > 10000 ? "blue" : "red",
+      color: "white"
+    });
+
   const columns = [
     {
       title: (        
@@ -58,11 +64,7 @@ const CRMData: React.FC<CRMDataProps> = ({
       ),
       dataIndex: 'campaign',
       key: 'campaign',
-    },
-    {
-      title: 'Lead',
-      dataIndex: 'lead',
-      key: 'lead',
+      render: (item: number) => item.toLocaleString('fr-FR'),
     },
     {
       title: (        
@@ -72,6 +74,8 @@ const CRMData: React.FC<CRMDataProps> = ({
       ),
       dataIndex: 'budget',
       key: 'budget',
+      render: (item: number) => item.toLocaleString('fr-FR'),
+
     },
     {
       title: (        
@@ -81,12 +85,8 @@ const CRMData: React.FC<CRMDataProps> = ({
       ),
       dataIndex: 'expense',
       key: 'expense',
-    },
-    {
-      title: 'Closed Won',
-      dataIndex: 'closedWon',
-      key: 'closedWon',
-    },
+      render: (item: number) => item.toLocaleString('fr-FR'),
+    }
   ];
 
   return (
@@ -202,7 +202,7 @@ const CRMData: React.FC<CRMDataProps> = ({
               
               <Tooltip />
               <Legend />
-              <Bar dataKey="totalAmount" fill="#82ca9d" barSize={30} />
+              <Bar dataKey="totalAmount" fill="#14afdd" barSize={30} />
             </BarChart>
           </ResponsiveContainer>
         </div>

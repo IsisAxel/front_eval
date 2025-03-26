@@ -7,6 +7,7 @@ export const setupInterceptors = (navigate : NavigateFunction) => {
     (response) => response,
     (error) => {
       if ((error.response && error.response.status === 401) || !error.response || error.response.data == "Token has expired." || error.response.data.startsWith("I/O error on")) {
+        localStorage.clear();
         navigate("/unauthorized");
       }
       return Promise.reject(error);

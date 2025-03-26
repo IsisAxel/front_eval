@@ -11,6 +11,14 @@ const BudgetAlertForm: React.FC = () => {
                 alertDate: dayjs(values.date).format("YYYY-MM-DD HH:mm:ss"),
                 createdById: localStorage.getItem('userId')
             };
+            if (request.rate <= 0) {
+              notification.error({
+                message: "Erreur",
+                description: "Rate can't be negative or null",
+                placement: "topRight",
+              });
+              return;
+            }
             fetchDataPost("http://localhost:8080/expense/createBudgetAlert", request)
             .then(() => {
               notification.success({
