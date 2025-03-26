@@ -1,11 +1,13 @@
-import { Table, Button, Modal, Input, Form, message, notification } from "antd";
+import { Table, Button, Modal, Input, Form, message, notification, DatePicker } from "antd";
 import { useState } from "react";
 import { fetchDataPost } from "../../util/util";
+import dayjs from "dayjs";
 
 const Expense = ({ data, setData }: { data: any[]; setData: (data: any[]) => void }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [currentExpense, setCurrentExpense] = useState<any | null>(null);
   const [form] = Form.useForm();
+  const [filters, setFilters] = useState({ title: "", minAmount: "" , maxAmount: "", startExpenseDate: null, endExpenseDate: null });
 
   const showEditModal = (expense: any) => {
     setCurrentExpense(expense);
@@ -84,6 +86,20 @@ const Expense = ({ data, setData }: { data: any[]; setData: (data: any[]) => voi
     }
   };
 
+  const filteredData = data.filter(item => {
+    const minAmount = filters.minAmount ? parseFloat(filters.minAmount) : null;
+    const maxAmount = filters.maxAmount ? parseFloat(filters.maxAmount) : null;
+    const expenseDate = dayjs(item.expenseDate)
+
+    return (
+      (!filters.title || item.campaignName.toLowerCase().includes(filters.title.toLowerCase())) &&
+      (!filters.startExpenseDate || expenseDate.isAfter(dayjs(filters.startExpenseDate).subtract(1, "day"), "day")) &&
+      (!filters.endExpenseDate || expenseDate.isBefore(dayjs(filters.endExpenseDate).add(1, "day"), "day")) &&
+      (minAmount === null || parseFloat(item.targetAmountAmount) >= minAmount) &&
+      (maxAmount === null || parseFloat(item.targetAmountAmount) <= maxAmount)
+    );
+  });
+
   const columns = [
     {
       title: "Number",
@@ -110,6 +126,7 @@ const Expense = ({ data, setData }: { data: any[]; setData: (data: any[]) => voi
       title: "Amount",
       dataIndex: "amount",
       key: "amount",
+      render: (item: number) => item.toLocaleString('fr-FR'),
     },
     {
       title: "Status",
@@ -140,7 +157,42 @@ const Expense = ({ data, setData }: { data: any[]; setData: (data: any[]) => voi
 
   return (
     <>
-      <Table dataSource={data} columns={columns} rowKey="id" />
+          {/* Filtres */}
+          <div style={{ display: "flex", gap: "10px", marginBottom: "15px" }}>
+        <Input
+          placeholder="Filter by campaign name"
+          value={filters.title}
+          onChange={e => setFilters({ ...filters, title: e.target.value })}
+          style={{ width: 200 }}
+        />
+        <DatePicker
+          placeholder="Min expense date"
+          value={filters.startExpenseDate}
+          onChange={date => setFilters({ ...filters, startExpenseDate: date })}
+          style={{ width: 200 }}
+        />
+        <DatePicker
+          placeholder="Max expense date"
+          value={filters.endExpenseDate}
+          onChange={date => setFilters({ ...filters, endExpenseDate: date })}
+          style={{ width: 200 }}
+        />
+        <Input
+          placeholder="Min amount"
+          value={filters.minAmount}
+          onChange={e => setFilters({ ...filters, minAmount: e.target.value })}
+          style={{ width: 150 }}
+          type="number"
+        />
+        <Input
+          placeholder="Max amount"
+          value={filters.maxAmount}
+          onChange={e => setFilters({ ...filters, maxAmount: e.target.value })}
+          style={{ width: 150 }}
+          type="number"
+        />
+      </div>
+      <Table dataSource={filteredData} columns={columns} rowKey="id" />
       <Modal
         title="Edit Expense Amount"
         open={isModalVisible}

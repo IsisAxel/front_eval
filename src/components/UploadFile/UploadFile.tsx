@@ -13,7 +13,7 @@ const UploadFile = () => {
         }
 
         try {
-            const response = await fetchDataPost('http://localhost:8080/admin/file', formData);
+            const response = await fetchDataPost('http://localhost:8080/campaign/duplicate', formData);
             console.log('Réponse du serveur:', response);
             message.success('Fichier téléchargé avec succès');
         } catch (error) {
